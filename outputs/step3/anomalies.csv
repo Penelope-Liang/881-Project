@@ -1,0 +1,1 @@
+series_uid,sop_uid,dicom_path,pixel_spacing_row,pixel_spacing_col,diameter_mm,centroid_x,centroid_y,bbox_xmin,bbox_ymin,bbox_xmax,bbox_ymax,points_len,points_json

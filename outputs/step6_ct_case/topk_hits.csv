@@ -1,0 +1,11 @@
+dicom_path,pred_diameter_mm,ok
+outputs/ct_case\1-190.dcm,183.9642838838712,True
+outputs/ct_case\1-191.dcm,183.3698731573265,True
+outputs/ct_case\1-001.dcm,182.85960875040988,True
+outputs/ct_case\1-008.dcm,180.29208041067614,True
+outputs/ct_case\1-196.dcm,179.1675098139674,True
+outputs/ct_case\1-206.dcm,178.82133455250255,True
+outputs/ct_case\1-072.dcm,177.94465950568747,True
+outputs/ct_case\1-056.dcm,177.9142569697678,True
+outputs/ct_case\1-004.dcm,177.70959562925705,True
+outputs/ct_case\1-026.dcm,177.5434808092285,True

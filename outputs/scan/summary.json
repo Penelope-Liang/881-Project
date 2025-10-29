@@ -1,0 +1,54 @@
+{
+  "num_patients": 1010,
+  "num_xml": 1180,
+  "num_dicom_all": 244527,
+  "num_dicom_ct": 243958,
+  "samples": [
+    {
+      "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0001\\01-01-2000-NA-NA-30178\\3000566.000000-NA-03192\\069.xml",
+      "series_uid": "1.3.6.1.4.1.14519.5.2.1.6279.6001.179049373636438705059720603192",
+      "roi_count": 32,
+      "dicom_found": true,
+      "overlay_path": "outputs/scan\\sample_overlay_00.png",
+      "pixel_spacing": [
+        0.703125,
+        0.703125
+      ]
+    },
+    {
+      "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0001\\01-01-2000-NA-NA-35511\\3000923.000000-NA-62357\\068.xml",
+      "series_uid": null,
+      "roi_count": 0,
+      "dicom_found": false,
+      "overlay_path": null,
+      "pixel_spacing": null
+    },
+    {
+      "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0002\\01-01-2000-NA-NA-26851\\3000972.000000-NA-22902\\070.xml",
+      "series_uid": null,
+      "roi_count": 0,
+      "dicom_found": false,
+      "overlay_path": null,
+      "pixel_spacing": null
+    },
+    {
+      "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0002\\01-01-2000-NA-NA-98329\\3000522.000000-NA-04919\\071.xml",
+      "series_uid": "1.3.6.1.4.1.14519.5.2.1.6279.6001.619372068417051974713149104919",
+      "roi_count": 53,
+      "dicom_found": true,
+      "overlay_path": "outputs/scan\\sample_overlay_03.png",
+      "pixel_spacing": [
+        0.681641,
+        0.681641
+      ]
+    },
+    {
+      "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0003\\01-01-2000-NA-NA-59141\\3000978.000000-NA-59882\\073.xml",
+      "series_uid": null,
+      "roi_count": 0,
+      "dicom_found": false,
+      "overlay_path": null,
+      "pixel_spacing": null
+    }
+  ]
+}

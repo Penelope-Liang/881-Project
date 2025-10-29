@@ -1,0 +1,14 @@
+[
+  {
+    "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0001\\01-01-2000-NA-NA-35511\\3000923.000000-NA-62357\\068.xml",
+    "reason": "no_series_or_roi"
+  },
+  {
+    "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0002\\01-01-2000-NA-NA-26851\\3000972.000000-NA-22902\\070.xml",
+    "reason": "no_series_or_roi"
+  },
+  {
+    "xml_path": "LIDC/dataset/LIDC-IDRI\\LIDC-IDRI-0003\\01-01-2000-NA-NA-59141\\3000978.000000-NA-59882\\073.xml",
+    "reason": "no_series_or_roi"
+  }
+]
