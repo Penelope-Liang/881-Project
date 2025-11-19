@@ -1,7 +1,6 @@
 import argparse
 import os
 import ast
-
 import torch
 from PIL import Image
 import numpy as np

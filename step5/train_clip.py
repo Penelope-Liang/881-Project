@@ -15,7 +15,7 @@ def recall_at_k(img_z, txt_z, k: int = 10):
 		k: number of top results to consider (default: 10)
 
 	returns:
-		recall@k score
+		recall k score
 	"""
 	img_z = torch.nn.functional.normalize(img_z, dim=-1)
 	txt_z = torch.nn.functional.normalize(txt_z, dim=-1)
