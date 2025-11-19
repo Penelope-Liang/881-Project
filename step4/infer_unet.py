@@ -6,7 +6,6 @@ from PIL import Image
 import numpy as np
 from pydicom import dcmread
 from skimage.transform import resize as sk_resize
-
 from step4.models.unet import UNet
 
 
