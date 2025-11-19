@@ -1,34 +1,18 @@
-############################################
-# LIDC-IDRI Nodule Retrieval - Requirements
-############################################
-
-# Core (CPU-friendly by default; GPU 可选单独安装)
 torch==2.5.1
 torchvision==0.20.1
-
-# Medical Imaging
 pydicom==2.4.4
 SimpleITK==2.3.1
-
-# Image Processing
 Pillow==10.4.0
 scikit-image==0.24.0
-
-# Data Processing
 numpy==1.26.4
 pandas==2.2.2
 lxml==5.3.0
-
-# Visualization
 matplotlib==3.9.0
-
-# Utilities
 tqdm==4.67.1
-
-# Jupyter (optional)
 jupyter==1.0.0
 ipykernel==6.29.5
+opencv-python==4.10.0.84
 
-# Windows + NVIDIA GPU (可选):
-# 若需 CUDA 12.8 支持请改用官方命令安装对应版本（示例）:
+# Windows + NVIDIA GPU (optional):
+# If you need CUDA 12.8 support, use the official installation command for the corresponding version:
 # pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128

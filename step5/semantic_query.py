@@ -1,4 +1,5 @@
-import argparse, os, json
+import argparse
+import os
 import numpy as np
 import pandas as pd
 import torch
@@ -8,27 +9,38 @@ from step5.text_templates import all_query_list
 
 
 def cosine_sim(a, b):
+	"""cosine_sim function computes cosine similarity matrix between two sets of vectors
+
+	args:
+		a: first set of vectors
+		b: second set of vectors
+
+	returns:
+		cosine similarity matrix
+	"""
 	a = a / (np.linalg.norm(a, axis=1, keepdims=True)+1e-9)
 	b = b / (np.linalg.norm(b, axis=1, keepdims=True)+1e-9)
 	return a @ b.T
 
 
 def main():
-	ap = argparse.ArgumentParser(description='Step5: semantic query Top-K retrieval')
-	ap.add_argument('--emb-dir', required=True, help='Folder with img_embeds.npy and meta.parquet')
-	ap.add_argument('--model', required=True, help='CLIP checkpoint (clip_best.pth)')
-	ap.add_argument('--query', required=True)
-	ap.add_argument('--topk', type=int, default=10)
-	ap.add_argument('--out', required=True)
-	args = ap.parse_args()
+	"""main function performs semantic query retrieval using CLIP model
+	"""
+	parser = argparse.ArgumentParser(description='Step5: semantic query Top-K retrieval')
+	parser.add_argument('--emb-dir', required=True, help='Folder with img_embeds.npy and meta.parquet')
+	parser.add_argument('--model', required=True, help='CLIP checkpoint (clip_best.pth)')
+	parser.add_argument('--query', required=True)
+	parser.add_argument('--topk', type=int, default=10)
+	parser.add_argument('--out', dest='out_dir', required=True)
+	args = parser.parse_args()
 
 	emb = np.load(os.path.join(args.emb_dir, 'img_embeds.npy'))
 	meta = pd.read_parquet(os.path.join(args.emb_dir, 'meta.parquet'))
 
-	ckpt = torch.load(args.model, map_location='cpu')
-	vocab = ckpt.get('vocab') or build_vocab(all_query_list())
+	checkpoint = torch.load(args.model, map_location='cpu')
+	vocab = checkpoint.get('vocab') or build_vocab(all_query_list())
 	txt = TxtEncoder(vocab=vocab, out_dim=emb.shape[1])
-	txt.load_state_dict(ckpt['txt'])
+	txt.load_state_dict(checkpoint['txt'])
 	txt.eval()
 
 	ids, length = tokenize(args.query, vocab, max_len=24)
@@ -38,10 +50,10 @@ def main():
 	idx = np.argsort(-sim)[:args.topk]
 	res = meta.iloc[idx].copy()
 	res['sim'] = sim[idx]
-	os.makedirs(args.out, exist_ok=True)
-	res.to_csv(os.path.join(args.out, 'topk.csv'), index=False)
+	os.makedirs(args.out_dir, exist_ok=True)
+	res.to_csv(os.path.join(args.out_dir, 'topk.csv'), index=False)
 	print(res[['dicom_path','diameter_mm','sim']].head(args.topk))
-	print('[step5] wrote', os.path.join(args.out, 'topk.csv'))
+	print('[step5] wrote', os.path.join(args.out_dir, 'topk.csv'))
 
 
 if __name__ == '__main__':

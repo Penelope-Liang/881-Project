@@ -1,56 +1,68 @@
-<<<<<<< HEAD
-# 881_project
-=======
-# LIDC-IDRI 肺结节检索系统
+# LIDC-IDRI Pulmonary Nodule Retrieval System
+A system designed to structure LIDC-IDRI lung nodule data for keyword or size-based filtering, UNet-based segmentation, and seamless integration with 3D Slicer for visualization.
 
-基于LIDC-IDRI数据集的肺结节关键词检索与3D Slicer可视化系统
-
-## 📁 项目结构
-
+## Installation
+### Get the Code
+```bash
+git clone <repository-url>
+cd 881_project
 ```
-S:\881project\
-├── LIDC/                          # 数据目录
+
+### Version Information
+- **Python**: 3.8+
+- **PyTorch**: 2.5.1
+- **CUDA**: 12.8+ (optional, for GPU support)
+
+### Prerequisites
+- Python 3.8 or higher
+- pip package
+- 3D Slicer for visualization
+- (Optional) CUDA 12.8+ compatible GPU for training
+
+## Project Structure
+```
+881_project/
+├── LIDC/                          # data directory
 │   └── dataset/
-│       ├── LIDC-IDRI/            # 原始DICOM数据和XML标注
+│       ├── LIDC-IDRI/            # original DICOM data and XML annotations, for data sample
 │       └── metadata.csv
 │
-├── step1/                         # 步骤1: 数据扫描与验证
-│   ├── scan_and_validate.py     # 扫描数据集,生成预览
-│   ├── test_scan_outputs.py     # 测试输出
+├── step1/                         # step 1: data scanning and validation
+│   ├── scan_and_validate.py     # scan dataset, generate previews
+│   ├── test_scan_outputs.py     # test outputs
 │   └── README.md
 │
-├── step2/                         # 步骤2: 索引构建与规则检索
-│   ├── build_indexes.py         # 构建slice和ROI索引
-│   ├── compute_diameter_and_update.py  # 计算直径
-│   ├── rule_query_export.py     # 规则检索导出
-│   ├── test_step2_outputs.py   # 测试输出
-│   └── README.md
+├── step2/                         # step 2: index building and rule-based retrieval
+│   ├── build_indexes.py         # build slice and ROI indexes
+│   ├── compute_diameter_and_update.py  # compute diameter
+│   ├── rule_query_export.py     # rule-based query and export   
+│   └── test_step2_outputs.py    # test outputs
 │
-├── step3/                         # 步骤3: 质量控制
-│   └── build_qc_report.py       # 生成QC报告
+├── step3/                         # step 3: quality control
+│   └── build_qc_report.py       # generate QC report
 │
-├── step4/                         # 步骤4: UNet分割模型
+├── step4/                         # step 4: UNet segmentation model
 │   ├── models/
-│   │   └── unet.py              # UNet架构
-│   ├── dataset_roi.py           # ROI数据集
-│   ├── make_patient_splits.py   # 患者级别划分
-│   ├── train_unet.py            # 训练脚本
-│   ├── eval_unet.py             # 评估脚本
-│   ├── infer_unet.py            # 推理脚本
-│   ├── Quality_Eval.ipynb       # 质量评估notebook
-│   ├── splits/                  # 数据划分
+│   │   └── unet.py              # unet architecture
+│   ├── dataset_roi.py           # roi dataset
+│   ├── make_patient_splits.py   # patient-level splits
+│   ├── train_unet.py            # training script
+│   ├── eval_unet.py             # evaluation script
+│   ├── infer_unet.py            # inference script
+│   ├── Quality_Eval.ipynb       # quality evaluation notebook
+│   ├── splits/                  # data splits
 │   │   ├── train_patients.txt
-│   │   ├── val_patients.txt
+│   │   ├── validation_patients.txt
 │   │   └── test_patients.txt
 │   └── README.md
 │
-├── step5/                         # 步骤5: 检索模型
-│   ├── regression/               # 5A: 直径回归模型(推荐)
+├── step5/                         # step 5: retrieval model
+│   ├── regression/               # 5A: diameter regression model (recommended)
 │   │   ├── dataset_reg.py
 │   │   ├── models_reg.py
 │   │   ├── train_reg.py
 │   │   └── predict_reg.py
-│   ├── models.py                # 5B: CLIP对比学习(备选)
+│   ├── models.py                # 5B: CLIP contrastive learning (alternative)
 │   ├── dataset.py
 │   ├── train_clip.py
 │   ├── build_embeddings.py
@@ -58,131 +70,156 @@ S:\881project\
 │   ├── text_templates.py
 │   └── README.md
 │
-├── step6/                         # 步骤6: 3D Slicer集成
-│   ├── query_to_slicer.py       # 基于预测CSV的检索
-│   └── find_and_show.py         # 端到端检索与显示
+├── step6/                       # step 6: 3D Slicer integration
+│   ├── query_to_slicer.py       # csv-based retrieval
+│   └── find_and_show.py         # end-to-end retrieval and display
 │
-├── outputs/                       # 所有输出文件
-│   ├── scan/                    # Step1输出
-│   ├── step2/                   # Step2索引和CSV
-│   ├── step3/                   # QC报告
-│   ├── step4/                   # UNet模型和评估
-│   ├── step5_reg/               # 回归模型
-│   └── step6_*/                 # Slicer导出
+├── outputs/                       # all output files
+│   ├── scan/                    # step1 outputs
+│   ├── step2/                   # step2 indexes and CSVs
+│   ├── step3/                   # qc reports
+│   ├── step4/                   # unet models and evaluations
+│   ├── step5_reg/               # regression models
+│   └── step6_*/                 # slicer exports
 │
-├── docs/                          # 文档
-│   ├── REPORT_总览与复现实操.md  # 完整项目报告
-│   └── PROJECT_SUMMARY.md        # 项目摘要(英文)
-│
-├── .venv/                         # Python虚拟环境
-├── requirements.txt               # 依赖列表
-└── README.md                      # 本文件
+├── .venv/                         # python virtual environment
+├── requirements.txt               # dependencies list
+└── README.md                      # this file
 ```
 
-## 🔄 完整工作流程
+## Usage
 
-### Step 1: 数据扫描与验证
-**目的**: 验证LIDC-IDRI数据完整性,生成样本预览
+Environment setup instructions are provided in the following section.
 
+## Environment Setup
+### Step 1: Create Virtual Environment
 ```bash
-# 激活虚拟环境
+python -m venv .venv
+.venv/Scripts/activate  # windows
+source .venv/bin/activate  # linux or Mac
+```
+
+### Step 2: Install Dependencies
+**Option A: Install from requirements.txt (CPU-only)**
+```bash
+pip install -r requirements.txt
+```
+
+**Option B: Install with GPU support (CUDA 12.8)**
+```bash
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+pip install pydicom lxml Pillow numpy pandas scikit-image matplotlib tqdm SimpleITK
+```
+
+### Step 3: Verify Installation
+```bash
+python -c "import torch; import pydicom; import numpy; print('Installation successful!')"
+```
+
+### GPU Support
+- Requires CUDA 12.8+ (RTX 5070 sm_120 support)
+- PyTorch Nightly version recommended for latest GPU architectures
+
+## Complete Workflow
+### Step 1: Data Scanning and Validation
+**Purpose**: Validate LIDC-IDRI data integrity and generate sample previews
+```bash
+# activate virtual environment
 .venv/Scripts/activate
 
-# 运行扫描
+# run scan
 python -m step1.scan_and_validate \
   --data-root LIDC/dataset/LIDC-IDRI \
   --samples 5 \
   --out outputs/scan
 
-# 测试输出
+# test outputs
 python -m step1.test_scan_outputs --out outputs/scan
 ```
 
-**输出**:
-- `outputs/scan/summary.json` - 数据集统计
-- `outputs/scan/sample_overlay_*.png` - ROI叠加预览图
+**Outputs**:
+- `outputs/scan/summary.json` - Dataset statistics
+- `outputs/scan/sample_overlay_*.png` - ROI overlay preview images
 
 ---
 
-### Step 2: 索引构建与预处理
-**目的**: 构建切片和ROI索引,计算结节直径
-
+### Step 2: Index Building and Preprocessing
+**Purpose**: Build slice and ROI indexes, compute nodule diameters
 ```bash
-# 2.1 构建索引
+# 2.1 build indexes
 python -m step2.build_indexes \
   --data-root LIDC/dataset/LIDC-IDRI \
   --out outputs/step2
 
-# 2.2 计算直径
+# 2.2 compute diameter
 python -m step2.compute_diameter_and_update \
-  --roi-json outputs/step2/roi_index.json \
-  --slice-json outputs/step2/slice_index.json \
+  --in outputs/step2 \
   --out outputs/step2
 
-# 2.3 规则检索示例
+# 2.3 query example
 python -m step2.rule_query_export \
+  --index outputs/step2/slice_index_with_diam.csv \
   --roi-csv outputs/step2/roi_with_diam.csv \
-  --query ">=3" \
+  --query ">=3mm" \
   --topk 10 \
   --out outputs/rule_ge3
 ```
 
-**输出**:
-- `outputs/step2/roi_with_diam.csv` - ROI级别数据(含直径)
-- `outputs/step2/slice_index_with_diam.csv` - 切片级别数据
-- `outputs/rule_ge3/topk_hits.csv` - 检索结果
+**Outputs**:
+- `outputs/step2/roi_with_diam.csv` - Roi data with diameter
+- `outputs/step2/slice_index_with_diam.csv` - Slice data
+- `outputs/rule_ge3/topk_hits.csv` - Query results
 
 ---
 
-### Step 3: 质量控制
-**目的**: 生成数据质量报告
-
+### Step 3: Quality Control
+**Purpose**: Generate data quality report
 ```bash
 python -m step3.build_qc_report \
-  --roi-csv outputs/step2/roi_with_diam.csv \
+  --in outputs/step2 \
   --out outputs/step3
 ```
 
-**输出**:
-- `outputs/step3/diameter_hist.png` - 直径分布直方图
-- `outputs/step3/REPORT.md` - QC报告
+**Outputs**:
+- `outputs/step3/diameter_histogram.png` - Diameter distribution histogram
+- `outputs/step3/REPORT.md` - QC report
 
 ---
 
-### Step 4: UNet分割模型训练
-**目的**: 训练结节分割模型
+### Step 4: UNet Segmentation Model Training
+**Purpose**: Train nodule segmentation model
 
 ```bash
-# 4.1 生成患者划分
+# 4.1 generate patient splits
 python -m step4.make_patient_splits \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --out step4/splits
 
-# 4.2 训练UNet
+# 4.2 train UNet model
 python -m step4.train_unet \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --train-patients step4/splits/train_patients.txt \
-  --val-patients step4/splits/val_patients.txt \
+  --val-patients step4/splits/validation_patients.txt \
   --epochs 30 \
   --bs 16 \
   --img-size 256 \
   --out outputs/step4
 
-# 4.3 评估模型
+# 4.3 evaluate model
 python -m step4.eval_unet \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --patients-file step4/splits/test_patients.txt \
-  --model outputs/step4/unet_best.pth \
+  --model outputs/step4/unet_best.path \
   --out outputs/step4/eval_test \
   --img-size 256
 ```
 
-**输出**:
-- `outputs/step4/unet_best.pth` - 训练好的模型
-- `outputs/step4/eval_test/summary.json` - 评估指标(Dice, IoU等)
-- `outputs/step4/eval_test/pr_curve.png` - PR曲线
+**Outputs**:
+- `outputs/step4/unet_best.path` - Trained model
+- `outputs/step4/eval_test/summary.json` - Evaluation metrics
+- `outputs/step4/eval_test/precision_recall_curve.png` - Precision Recall curve
 
-**评估指标** (测试集):
+**Evaluation Metrics** (Test set):
 - Dice: ~0.85
 - IoU: ~0.75
 - Precision: ~0.88
@@ -190,204 +227,151 @@ python -m step4.eval_unet \
 
 ---
 
-### Step 5: 检索模型训练
-
-#### 方案A: 直径回归模型 (推荐)
-**目的**: 训练ResNet18回归模型预测结节直径
+### Step 5: Retrieval Model Training Only for Discussion
+#### Option A: Diameter Regression Model (Recommended)
+**Purpose**: Train ResNet18 regression model to predict nodule diameter
 
 ```bash
-# 5A.1 训练回归模型
+# 5A.1 train regression model
 python -m step5.regression.train_reg \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --train-patients step4/splits/train_patients.txt \
-  --val-patients step4/splits/val_patients.txt \
+  --val-patients step4/splits/validation_patients.txt \
   --epochs 20 \
   --bs 32 \
   --img-size 256 \
   --out outputs/step5_reg
 
-# 5A.2 预测测试集
+# 5A.2 predict on test set
 python -m step5.regression.predict_reg \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --patients-file step4/splits/test_patients.txt \
-  --model outputs/step5_reg/reg_best.pth \
+  --model outputs/step5_reg/reg_best.path \
   --out outputs/step5_reg/test_pred \
   --img-size 256
 ```
 
-**输出**:
-- `outputs/step5_reg/reg_best.pth` - 回归模型
-- `outputs/step5_reg/test_pred/pred_regression.csv` - 预测结果
+**Outputs**:
+- `outputs/step5_reg/reg_best.path` - Regression model
+- `outputs/step5_reg/test_pred/pred_regression.csv` - Prediction results
 
-**评估指标**:
+**Evaluation Metrics**:
 - MAE: ~1.8mm
-- 分类准确率: ~84%
+- Classification accuracy: ~84%
 
-#### 方案B: CLIP对比学习 (备选)
+#### Option B: CLIP Contrastive Learning (Alternative)
 ```bash
-# 5B.1 训练CLIP
+# 5B.1 train CLIP
 python -m step5.train_clip \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --train-patients step4/splits/train_patients.txt \
-  --val-patients step4/splits/val_patients.txt \
+  --val-patients step4/splits/validation_patients.txt \
   --epochs 30 \
   --bs 64 \
   --out outputs/step5
 
-# 5B.2 构建嵌入库
+# 5B.2 build embedding library
 python -m step5.build_embeddings \
   --roi-csv outputs/step2/roi_with_diam.csv \
   --patients-file step4/splits/test_patients.txt \
   --model outputs/step5/clip_best.pth \
   --out outputs/step5/test_embed
 
-# 5B.3 语义检索
+# 5B.3 semantic query
 python -m step5.semantic_query \
-  --embed-dir outputs/step5/test_embed \
+  --emb-dir outputs/step5/test_embed \
   --model outputs/step5/clip_best.pth \
   --query "large nodule" \
-  --topk 10
+  --topk 10 \
+  --out outputs/step5/query_result
 ```
 
 ---
 
-### Step 6: 3D Slicer集成
-
-#### 方案A: 基于预测CSV检索
+### Step 6: 3D Slicer Integration
+#### Option A: CSV-based Retrieval
 ```bash
 python -m step6.query_to_slicer \
   --pred-csv outputs/step5_reg/test_pred/pred_regression.csv \
-  --query ">=10" \
+  --query ">=10mm" \
   --topk 10 \
-  --unet-model outputs/step4/unet_best.pth \
+  --unet outputs/step4_test/unet_best.path \
   --out outputs/step6_query
 ```
 
-#### 方案B: 端到端检索(推荐)
+#### Option B: End-to-End Retrieval (Recommended)
 ```bash
 python -m step6.find_and_show \
-  --dicom-root LIDC/dataset/LIDC-IDRI/LIDC-IDRI-0001 \
-  --query ">=5" \
+  --data-root LIDC/dataset/LIDC-IDRI/LIDC-IDRI-0001 \
+  --query ">=5mm" \
   --topk 10 \
-  --unet-model outputs/step4/unet_best.pth \
-  --reg-model outputs/step5_reg/reg_best.pth \
+  --unet outputs/step4_test/unet_best.path \
   --out outputs/step6_case \
-  --launch-slicer
+  --slicer /path/to/Slicer.exe
 ```
 
-**输出**:
-- `outputs/step6_*/hit_*.dcm` - 检索到的DICOM切片
-- `outputs/step6_*/hit_*_mask.nii.gz` - 分割掩码(NIfTI格式)
-- `outputs/step6_*/topk_hits.csv` - 检索清单
+**Outputs**:
+- `outputs/step6_*/hit_*.dcm` - Retrieved DICOM slices
+- `outputs/step6_*/hit_*_mask.nii.gz` - Segmentation masks in NIFTI format
+- `outputs/step6_*/topk_hits.csv` - Retrieval
 
-**3D Slicer导入**:
-1. 打开3D Slicer
-2. File → Add Data → 选择输出文件夹
-3. 加载DICOM和对应的mask文件
-4. 在Segment Editor中可视化分割结果
-
----
-
-## 🔧 环境配置
-
-### 创建虚拟环境
-```bash
-python -m venv .venv
-.venv/Scripts/activate  # Windows
-```
-
-### 安装依赖
-```bash
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-pip install pydicom lxml Pillow numpy pandas scikit-image matplotlib tqdm SimpleITK
-```
-
-### GPU支持
-- 需要CUDA 12.8+ (RTX 5070 sm_120支持)
-- PyTorch Nightly版本
+**3D Slicer Import**:
+1. Open 3D Slicer
+2. File → Add Data → Select output folder
+3. Load DICOM and corresponding mask files
+4. Visualize segmentation results in Segment Editor
 
 ---
 
-## 📊 核心AI模型
+## Core Models
+### 1. UNet Segmentation Model (Step 4)
+- **Architecture**: 2D UNet (4-layer encoder-decoder)
+- **Input**: 256×256 single-channel CT slice
+- **Output**: 256×256 binary segmentation mask
+- **Training**: BCE + Dice Loss, Adam optimizer
+- **Performance**: Dice 0.85, IoU 0.75
 
-### 1. UNet分割模型 (Step 4)
-- **架构**: 2D UNet (4层编码器-解码器)
-- **输入**: 256×256单通道CT切片
-- **输出**: 256×256二值分割掩码
-- **训练**: BCE + Dice Loss, Adam优化器
-- **性能**: Dice 0.85, IoU 0.75
+### 2. Diameter Regression Model (Step 5A) for Discussion
+- **Architecture**: ResNet18 + dual-head (regression + classification)
+- **Input**: 256×256 single-channel ROI image
+- **Output**: Nodule diameter and diameter class
+- **Training**: MSE (regression) + CrossEntropy (classification), Adam optimizer
+- **Performance**: MAE 1.8mm, accuracy 84%
 
-### 2. 直径回归模型 (Step 5A)
-- **架构**: ResNet18 + 双头(回归+分类)
-- **输入**: 256×256单通道ROI图像
-- **输出**: 直径(mm) + 直径bin(0-3mm, 3-10mm, 10-20mm, >20mm)
-- **训练**: MSE(回归) + CrossEntropy(分类), Adam优化器
-- **性能**: MAE 1.8mm, 准确率 84%
-
-### 3. CLIP对比学习模型 (Step 5B, 备选)
-- **架构**: ResNet18(图像) + LSTM(文本)
-- **训练**: InfoNCE对比损失
-- **性能**: 较弱,不推荐用于生产
-
----
-
-## 📖 详细文档
-
-- **完整报告**: `docs/REPORT_总览与复现实操.md` (中文,含所有细节)
-- **项目摘要**: `docs/PROJECT_SUMMARY.md` (英文)
-- **各步骤README**: 每个step文件夹内
+### 3. CLIP Contrastive Learning Model (Step 5B, Alternative) for Discussion
+- **Architecture**: ResNet18 (image) + LSTM (text)
+- **Training**: InfoNCE contrastive loss
+- **Performance**: Weak, not recommended for production
 
 ---
 
-## 🎯 快速开始
+## Training Procedures
+### Model Training Overview
 
-```bash
-# 1. 激活环境
-.venv/Scripts/activate
+This project includes training procedures for two main models:
 
-# 2. 运行完整流程(假设已有训练好的模型)
-python -m step6.find_and_show \
-  --dicom-root LIDC/dataset/LIDC-IDRI/LIDC-IDRI-0001 \
-  --query ">=5" \
-  --topk 10 \
-  --unet-model outputs/step4/unet_best.pth \
-  --reg-model outputs/step5_reg/reg_best.pth \
-  --out outputs/demo \
-  --launch-slicer
-```
+1. **UNet Segmentation Model** (Step 4) - For nodule segmentation
+2. **Diameter Regression Model** (Step 5A) - For diameter prediction
 
----
+See detailed training commands in the [Complete Workflow](#complete-workflow) section above.
 
-## 📝 注意事项
-
-1. **数据路径**: 确保LIDC-IDRI数据在 `LIDC/dataset/LIDC-IDRI/`
-2. **虚拟环境**: 始终在 `.venv` 中运行,避免DLL冲突
-3. **GPU内存**: UNet训练需要~8GB显存(batch_size=16)
-4. **患者划分**: 使用患者级别划分避免数据泄漏
+### Training Tips
+- Use patient-level splits to avoid data leakage
+- Monitor GPU memory usage (UNet requires ~8GB VRAM)
+- Save checkpoints regularly during training
+- Use validation set to prevent overfitting
 
 ---
 
-## 🙋 常见问题
-
-**Q: 训练时CUDA错误?**
-A: 确保PyTorch版本支持sm_120,使用Nightly CUDA 12.8版本
-
-**Q: 如何只检索特定患者?**
-A: 修改 `--dicom-root` 指向特定患者文件夹
-
-**Q: 3D Slicer无法打开?**
-A: 检查Slicer路径,或手动导入输出文件夹
+## Documentation
+- **Step READMEs**: In each step folder (step1, step5)
+- **Quality Reports**: `outputs/step3/REPORT.md` (generated after step3)
 
 ---
 
-## 👥 作者
+## Notes
 
-LIDC-IDRI肺结节检索系统 - 2025
-
-## 📄 许可
-
-本项目仅供学术研究使用
-
-
-
->>>>>>> 50105a4 (881 project)
+1. **Data Path**: Ensure LIDC-IDRI data is in `LIDC/dataset/LIDC-IDRI/`
+2. **Virtual Environment**: Always run in `.venv` to avoid DLL conflicts
+3. **GPU Memory**: UNet training requires ~8GB VRAM (batch_size=16)
+4. **Patient Splits**: Use patient-level splits to avoid data leakage

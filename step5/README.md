@@ -56,5 +56,5 @@ python -m step5.semantic_query ^
 - Output: `outputs/step5/topk_demo/topk.csv` (dicom_path, diameter_mm, similarity)
 
 ## Notes
-- If CUDA init fails on your Windows setup, training/embedding can run on CPU (slower but fine for demo).
+- If CUDA fails on your Windows setup, training or embedding can run on CPU (slower but fine for demo).
 - You can fuse retrieval score with rule-based diameter score at application level: `alpha*cosine + (1-alpha)*rule`.
