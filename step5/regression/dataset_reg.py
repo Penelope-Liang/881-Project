@@ -94,7 +94,7 @@ class RoiRegressionDataset(Dataset):
 		points = ast.literal_eval(row["points_json"]) if isinstance(row["points_json"], str) else row["points_json"]
 		xs = [p[0] for p in points]
 		ys = [p[1] for p in points]
-		xmin, ymin, xmax, ymax = max(0,min(xs)-self.pad), max(0,min(ys)-self.pad), min(W-1,max(xs)+self.pad), min(H-1,max(ys)+self.pad)
+		xmin, ymin, xmax, ymax = max(0, min(xs)-self.pad), max(0,min(ys) - self.pad), min(W-1, max(xs) + self.pad), min(H-1, max(ys) + self.pad)
 		crop = img[ymin:ymax+1, xmin:xmax+1]
 		crop = sk_resize(crop, self.img_size, order=1, preserve_range=True, anti_aliasing=True).astype(np.float32)
 		diameter_mm = float(row["diameter_mm"])
