@@ -1,0 +1,24 @@
+{
+  "best_slice_index": 0,
+  "best_diameter_mm": 48.37664794921875,
+  "total_slices": 2,
+  "slice_scores": [
+    48.37664794921875,
+    10.534343719482422
+  ],
+  "volume_shape": [
+    2,
+    2022,
+    2022
+  ],
+  "spacing": [
+    1.0,
+    1.0,
+    1.0
+  ],
+  "origin": [
+    0.0,
+    0.0,
+    0.0
+  ]
+}

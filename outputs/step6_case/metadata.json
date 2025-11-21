@@ -1,0 +1,18 @@
+{
+  "series_uid": "1.3.6.1.4.1.14519.5.2.1.6279.6001.141365756818074696859567662357",
+  "query": ">=0mm",
+  "ct_volume": "outputs/step6_case/ct_volume.nii.gz",
+  "segmentation_volume": "outputs/step6_case/segmentation_volume.nii.gz",
+  "slices": [
+    {
+      "slice_index": 0,
+      "predicted_diameter_mm": 48.37664794921875,
+      "predicted_bin": 2,
+      "predicted_category": ">10mm",
+      "confidence": 0.9999986886978149,
+      "dicom_path": "/Users/penelopel/Downloads/881_project/LIDC/dataset/LIDC-IDRI/LIDC-IDRI-0001/01-01-2000-NA-NA-35511/3000923.000000-NA-62357/1-1.dcm",
+      "exported_dicom": "outputs/step6_case/hit_000.dcm",
+      "mask_path": "outputs/step6_case/hit_000_mask.nii.gz"
+    }
+  ]
+}

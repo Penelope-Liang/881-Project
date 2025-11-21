@@ -16,7 +16,7 @@ def collection(batch):
 	returns:
 		tuple of stacked_images, diameter_labels, class_labels, paths_list
 	"""
-	imgs, diameters, clss, paths = zip(*batch)
+	imgs, diameters, clss, paths, bboxes = zip(*batch)
 	return torch.stack(imgs,0), torch.tensor(diameters), torch.tensor(clss), list(paths)
 
 

@@ -1,18 +1,26 @@
-torch==2.5.1
-torchvision==0.20.1
-pydicom==2.4.4
-SimpleITK==2.3.1
-Pillow==10.4.0
-scikit-image==0.24.0
-numpy==1.26.4
-pandas==2.2.2
-lxml==5.3.0
-matplotlib==3.9.0
+torch==2.9.1
+torchvision==0.24.1
+pydicom==3.0.1
+SimpleITK==2.5.2
+numpy==2.2.6
+scikit-image==0.25.2
+opencv-python==4.12.0.88
+scipy==1.16.3
+pandas==2.3.3
+python-dateutil==2.9.0.post0
+pytz==2025.2
+Pillow==12.0.0
+matplotlib==3.10.7
+tifffile==2025.10.16
 tqdm==4.67.1
-jupyter==1.0.0
-ipykernel==6.29.5
-opencv-python==4.10.0.84
+requests==2.32.5
+lxml==6.0.2
+PyYAML==6.0.3
 
-# Windows + NVIDIA GPU (optional):
-# If you need CUDA 12.8 support, use the official installation command for the corresponding version:
+# jupyter envir for Quality_Eval.ipynb
+jupyter==1.1.1
+ipykernel==7.1.0
+ipywidgets==8.1.8
+
+# optional: GPU (CUDA 12.8) installation
 # pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128

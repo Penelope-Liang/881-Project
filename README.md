@@ -94,7 +94,7 @@ Environment setup instructions are provided in the following section.
 ## Environment Setup
 ### Step 1: Create Virtual Environment
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 .venv/Scripts/activate  # windows
 source .venv/bin/activate  # linux or Mac
 ```
@@ -288,7 +288,7 @@ python -m step5.semantic_query \
 
 ---
 
-### Step 6: 3D Slicer Integration
+### Step 6: Query and Retrieval
 #### Option A: CSV-based Retrieval
 ```bash
 python -m step6.query_to_slicer \
@@ -308,6 +308,47 @@ python -m step6.find_and_show \
   --unet outputs/step4_test/unet_best.path \
   --out outputs/step6_case \
   --slicer /path/to/Slicer.exe
+```
+
+---
+
+### Step 7: 3D Visualization and Slicer Integration
+**Purpose**: Advanced 3D visualization and automated Slicer integration
+
+#### Option A: Complete 3D Pipeline (Recommended)
+```bash
+# Generate 3D volume from CT case
+python -m step7.integrated_pipeline \
+  --ct-dir outputs/ct_case \
+  --out outputs/step7_3d
+
+# Launch 3D Slicer with automatic setup
+./run_slicer_test.sh
+```
+
+#### Option B: Manual 3D Slicer Operations
+**In 3D Slicer Python Console**:
+```python
+# Load and display data
+exec(open('step7/load_and_display.py').read())
+
+# Enable 3D volume rendering
+exec(open('step7/show_3d_volume.py').read())
+
+# Enable true 3D transparency effects
+exec(open('step7/true_3d.py').read())
+```
+
+#### Option C: Individual Visualization Scripts
+```bash
+# Quick data check
+python -m step7.quick_check --data outputs/ct_case
+
+# Verify slice indexing
+python -m step7.verify_slice_index --data outputs/ct_case
+
+# Check individual slices
+python -m step7.check_slice --slice outputs/ct_case/1-001.dcm
 ```
 
 **Outputs**:
