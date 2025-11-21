@@ -1,0 +1,17 @@
+{
+  "top1_slice_index": 96,
+  "num_nodules": 1,
+  "nodules": [
+    {
+      "id": 1,
+      "bbox": [
+        296,
+        182,
+        351,
+        236
+      ],
+      "diameter_mm": 42.375282287597656,
+      "confidence": 0.3983391523361206
+    }
+  ]
+}

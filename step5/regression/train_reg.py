@@ -61,7 +61,7 @@ def main():
 
 	best_score = 1e9
 	os.makedirs(args.out_dir, exist_ok=True)
-	checkpoint_path = os.path.join(args.out_dir, "reg_best.path")
+	checkpoint_path = os.path.join(args.out_dir, "reg_best.pth")
 
 	for ep in range(1, args.epochs+1):
 		model.train(); loss_sum=0.0

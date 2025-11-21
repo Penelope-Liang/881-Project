@@ -1,0 +1,7 @@
+names:
+- nodule
+nc: 1
+path: /Users/penelopel/Desktop/881_project/plan_b/detection_data
+test: images/test
+train: images/train
+val: images/val

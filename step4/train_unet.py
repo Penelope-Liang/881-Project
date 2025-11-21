@@ -125,7 +125,7 @@ def main():
 
 	best_validation_loss = 1e9
 	os.makedirs(args.out_dir, exist_ok=True)
-	checkpoint_path = os.path.join(args.out_dir, "unet_best.path")
+	checkpoint_path = os.path.join(args.out_dir, "unet_best.pth")
 	preview_dir = os.path.join(args.out_dir, "previews")
 
 	step = 0
