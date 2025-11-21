@@ -1,10 +1,9 @@
-# LIDC-IDRI Pulmonary Nodule Retrieval System
-A system designed to structure LIDC-IDRI lung nodule data for keyword or size-based filtering, UNet-based segmentation, and seamless integration with 3D Slicer for visualization.
+# Overview
+LIDC-IDRI Nodule Retrieval System is an end-to-end pipeline to structure LIDC-IDRI lung nodule data for keyword or size-based filtering, UNet-based segmentation, and diameter regression and semantic retrieval, and use 3D Slicer for visualization.
 
 ## Installation
-### Get the Code
 ```bash
-git clone <repository-url>
+git clone https://github.com/schorm/881_project.git
 cd 881_project
 ```
 
@@ -19,7 +18,7 @@ cd 881_project
 - 3D Slicer for visualization
 - (Optional) CUDA 12.8+ compatible GPU for training
 
-## Project Structure
+## Code Structure
 ```
 881_project/
 ├── LIDC/                          # data directory
@@ -87,7 +86,11 @@ cd 881_project
 │   ├── step3/                   # qc reports
 │   ├── step4/                   # unet models and evaluations
 │   ├── step5_reg/               # regression models
+│   ├── step6_*/                 # step6 related outputs
 │   └── step7_*/                 # slicer visualization outputs
+│
+├── plan_b/                      # step6 YOLOv8 detector outputs
+│   └── runs/detect/             # YOLOv8 training results and models
 │
 ├── .venv/                         # python virtual environment
 ├── requirements.txt               # dependencies list
@@ -95,10 +98,10 @@ cd 881_project
 ```
 
 ## Usage
+**Note**: On macOS and Linux, you may need to use `python3` instead of `python`. If `python` command is not found, replace all `python` commands with `python3` in the following instructions.
 
-Environment setup instructions are provided in the following section.
 
-## Environment Setup
+## Quick Setup
 ### Step 1: Create Virtual Environment
 ```bash
 python3 -m venv .venv
@@ -112,7 +115,7 @@ source .venv/bin/activate  # linux or mac
 pip install -r requirements.txt
 ```
 
-**Option B: Install with GPU support (CUDA 12.8)**
+**Option B: Install with GPU support (CUDA 12.8) or directly use CPU**
 ```bash
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 pip install pydicom lxml Pillow numpy pandas scikit-image matplotlib tqdm SimpleITK
@@ -124,12 +127,11 @@ python -c "import torch; import pydicom; import numpy; print('Installation succe
 ```
 
 ### GPU Support
-- Requires CUDA 12.8+ (RTX 5070 sm_120 support)
+- Requires CUDA 12.8+
 - PyTorch Nightly version recommended for latest GPU architectures
 
-## Complete Workflow
-### Step 1: Data Scanning and Validation
-**Purpose**: Validate LIDC-IDRI data integrity and generate sample previews
+## Pipeline
+### Step 1: Dataset and Annotation Alignment
 ```bash
 # activate virtual environment
 .venv/Scripts/activate
@@ -144,14 +146,9 @@ python -m step1.scan_and_validate \
 python -m step1.test_scan_outputs --out outputs/scan
 ```
 
-**Outputs**:
-- `outputs/scan/summary.json` - Dataset statistics
-- `outputs/scan/sample_overlay_*.png` - ROI overlay preview images
-
 ---
 
-### Step 2: Index Building and Preprocessing
-**Purpose**: Build slice and ROI indexes, compute nodule diameters
+### Step 2: Nodule Index Construction and Geometric Feature Extraction
 ```bash
 # 2.1 build indexes
 python -m step2.build_indexes \
@@ -172,30 +169,18 @@ python -m step2.rule_query_export \
   --out outputs/rule_ge3
 ```
 
-**Outputs**:
-- `outputs/step2/roi_with_diam.csv` - Roi data with diameter
-- `outputs/step2/slice_index_with_diam.csv` - Slice data
-- `outputs/rule_ge3/topk_hits.csv` - Query results
-
 ---
 
 ### Step 3: Quality Control
-**Purpose**: Generate data quality report
 ```bash
 python -m step3.build_qc_report \
   --in outputs/step2 \
   --out outputs/step3
 ```
 
-**Outputs**:
-- `outputs/step3/diameter_histogram.png` - Diameter distribution histogram
-- `outputs/step3/REPORT.md` - QC report
-
 ---
 
-### Step 4: UNet Segmentation Model Training
-**Purpose**: Train nodule segmentation model
-
+### Step 4: Tumour Segmentation Model
 ```bash
 # 4.1 generate patient splits
 python -m step4.make_patient_splits \
@@ -221,23 +206,10 @@ python -m step4.eval_unet \
   --img-size 256
 ```
 
-**Outputs**:
-- `outputs/step4/unet_best.pth` - Trained model
-- `outputs/step4/eval_test/summary.json` - Evaluation metrics
-- `outputs/step4/eval_test/precision_recall_curve.png` - Precision Recall curve
-
-**Evaluation Metrics** (Test set):
-- Dice
-- IoU
-- Precision
-- Recall
-
 ---
 
-### Step 5: Retrieval Model Training Only for Discussion
+### Step 5: Slice Retrieval
 #### Option A: Diameter Regression Model (Recommended)
-**Purpose**: Train ResNet18 regression model to predict nodule diameter
-
 ```bash
 # 5a.1 train regression model
 python -m step5.regression.train_reg \
@@ -258,15 +230,7 @@ python -m step5.regression.predict_reg \
   --img-size 256
 ```
 
-**Outputs**:
-- `outputs/step5_reg/reg_best.pth` - Regression model
-- `outputs/step5_reg/test_pred/pred_regression.csv` - Prediction results
-
-**Evaluation Metrics**:
-- MAE
-- Classification accuracy
-
-#### Option B: CLIP Contrastive Learning (Alternative)
+#### Option B: CLIP Contrastive Learning (Alternative for Discussion)
 ```bash
 # 5b.1 train clip
 python -m step5.train_clip \
@@ -295,23 +259,12 @@ python -m step5.semantic_query \
 
 ---
 
-### Step 6: YOLOv8 Nodule Detector Training
-**Purpose**: Train YOLOv8 model to detect lung nodules on full CT slices
-
+### Step 6: YOLOv8 Nodule Detector
 **Prerequisites**:
-- Prepared YOLO dataset (images and labels in YOLO format with dataset config YAML)
+- Prepared YOLO dataset
 - Ultralytics YOLOv8 (`pip install ultralytics`)
 
 ```bash
-# quick test (1 epoch, verified working)
-python step6/train_detector.py \
-    --data plan_b/detection_data/nodule_detection.yaml \
-    --model yolov8s.pt \
-    --epochs 1 \
-    --batch 2 \
-    --device cpu
-
-# full training (50 epochs)
 python step6/train_detector.py \
     --data plan_b/detection_data/nodule_detection.yaml \
     --model yolov8s.pt \
@@ -320,31 +273,9 @@ python step6/train_detector.py \
     --device cpu
 ```
 
-**Arguments**:
-- `--data`: Path to YOLO dataset config YAML (required, example: `plan_b/detection_data/nodule_detection.yaml`)
-- `--model`: Pretrained YOLOv8 model (default: `yolov8s.pt`)
-  - Options: `yolov8n.pt` (nano), `yolov8s.pt` (small), `yolov8m.pt` (medium)
-- `--epochs`: Number of training epochs (default: 50)
-- `--batch`: Batch size (default: 16)
-- `--device`: Device to use, `cuda` or `cpu` (default: `cuda`, use `cpu` on Mac or if no GPU available)
-- `--project`: Project directory for results (default: `plan_b/runs/detect`)
-- `--name`: Experiment name (default: `nodule_yolov8`)
-
-**Outputs**:
-- `plan_b/runs/detect/nodule_yolov8/weights/best.pt` - Best model checkpoint
-- `plan_b/runs/detect/nodule_yolov8/weights/last.pt` - Last model checkpoint
-- `plan_b/runs/detect/nodule_yolov8/results.csv` - Training metrics
-- `plan_b/runs/detect/nodule_yolov8/results.png` - Training curves
-
-**Training Time**:
-- GPU (RTX 3090): ~2-3 hours for 50 epochs
-- CPU: Not recommended (very slow)
-
 ---
 
-### Step 7: 3D Slicer Visualization Pipeline
-**Purpose**: End-to-end nodule detection, segmentation, and 3D Slicer visualization
-
+### Step 7: 3D Slicer Integration
 **Prerequisites**:
 - Trained YOLOv8 detector (from Step 6)
 - Trained UNet segmentation model (from Step 4)
@@ -352,15 +283,7 @@ python step6/train_detector.py \
 - 3D Slicer installed (download from https://www.slicer.org/)
 
 #### Step 7.1: Run Detection and Segmentation Pipeline
-
 ```bash
-# note: replace placeholders with actual paths
-# <path_to_dicom_directory>: directory containing DICOM files
-# <path_to_yolo_model>: path to trained YOLOv8 model .pt file
-# <path_to_unet_model>: path to trained UNet model .pth file
-# <path_to_regression_model>: path to trained regression model .pth file
-# <output_directory>: directory to save results
-
 python step7/pipeline.py \
     --ct-dir <path_to_dicom_directory> \
     --query "<query_string>" \
@@ -371,55 +294,8 @@ python step7/pipeline.py \
     --conf-threshold 0.25 \
     --device cpu
 ```
-
-**Arguments**:
-- `--ct-dir`: Directory containing DICOM files (required)
-- `--query`: Query string for filtering nodules (required)
-  - Examples: `">3mm"`, `"<5mm"`, `"3-5mm"`
-- `--detector`: Path to trained YOLOv8 model `.pt` file (required)
-- `--unet`: Path to trained UNet model `.pth` file (required)
-- `--regressor`: Path to trained regression model `.pth` file (required)
-- `--output-dir`: Output directory for results (default: `plan_b/outputs/result`)
-- `--conf-threshold`: YOLOv8 confidence threshold (default: 0.25)
-- `--device`: Device to use, `cuda` or `cpu` (default: `cuda`, use `cpu` on Mac or if no GPU available)
-
-**Outputs**:
-- `<output_dir>/series.nii.gz` - 3D CT volume
-- `<output_dir>/series_label.nii.gz` - 3D segmentation label volume
-- `<output_dir>/summary.json` - Detection and segmentation summary
-
-#### Step 7.2: Visualize in 3D Slicer
-
+# example:
 ```bash
-python step7/visualize.py \
-    --result-dir <output_directory> \
-    --slicer-path "<path_to_slicer_executable>"
-```
-
-**Arguments**:
-- `--result-dir`: Directory containing pipeline results (required)
-- `--slicer-path`: Path to 3D Slicer executable (optional, auto-detected if not specified)
-  - Auto-detection checks common installation paths for your platform
-  - Mac: `/Applications/Slicer.app/Contents/MacOS/Slicer`
-  - Windows: `D:/Slicer 5.8.1/Slicer.exe`, `C:/Program Files/Slicer/Slicer.exe`
-  - Linux: `/usr/local/Slicer/Slicer`, `/opt/Slicer/Slicer`
-- `--output-script`: Custom output path for generated Slicer script (optional)
-
-**What Happens**:
-1. Generates a Slicer Python script with visualization commands
-2. Automatically launches 3D Slicer with the script
-3. Displays CT volume, segmentation, and annotations in four-view layout
-
-**Visualization Features**:
-- **2D Views**: CT volume with lung window, red segmentation overlay, yellow centroids, green bounding boxes, cyan contours
-- **3D View**: Red 3D segmentation model with all markups visible
-- **Layout**: Four-view layout (Axial, Sagittal, Coronal, 3D) with synchronized navigation
-
-**Example Usage**:
-
-```bash
-# example 1: complete workflow (pipeline + visualization)
-# step 1: run detection and segmentation pipeline
 python step7/pipeline.py \
     --ct-dir outputs/ct_case \
     --query ">5mm" \
@@ -428,67 +304,13 @@ python step7/pipeline.py \
     --regressor outputs/step5_reg/reg_best.path \
     --output-dir plan_b/outputs/large_nodules \
     --device cpu
-
-# step 2: visualize the results
-# slicer path is auto-detected, or specify manually with --slicer-path
-python step7/visualize.py \
-    --result-dir plan_b/outputs/large_nodules
-
-# example 2: quick test visualization only (skip pipeline)
-# uses pre-generated example_output, slicer path auto-detected
-python step7/visualize.py \
-    --result-dir step7/example_output
 ```
 
-**Performance**:
-- Pipeline Runtime (GPU): ~30-60 seconds per CT volume
-- Pipeline Runtime (CPU): ~5-10 minutes per CT volume
-- Slicer Launch: ~10-20 seconds
+#### Step 7.2: Visualize in 3D Slicer
 
----
-
-## Core Models
-### 1. UNet Segmentation Model (Step 4)
-- **Architecture**: 2D UNet (4-layer encoder-decoder)
-- **Input**: 256×256 single-channel CT slice
-- **Output**: 256×256 binary segmentation mask
-- **Training**: BCE + Dice Loss, Adam optimizer
-- **Performance**: Dice 0.85, IoU 0.75
-
-### 2. Diameter Regression Model (Step 5A) for Discussion
-- **Architecture**: ResNet18 + dual-head (regression + classification)
-- **Input**: 256×256 single-channel ROI image
-- **Output**: Nodule diameter and diameter class
-- **Training**: MSE (regression) + CrossEntropy (classification), Adam optimizer
-
-### 3. CLIP Contrastive Learning Model (Step 5B, Alternative) for Discussion
-- **Architecture**: ResNet18 (image) + LSTM (text)
-- **Training**: InfoNCE contrastive loss
-- **Performance**: Weak, not recommended for production
-
----
-
-## Training Procedures
-### Model Training Overview
-
-This project includes training procedures for two main models:
-
-1. **UNet Segmentation Model** (Step 4) - For nodule segmentation
-2. **Diameter Regression Model** (Step 5A) - For diameter prediction
-
-See detailed training commands in the [Complete Workflow](#complete-workflow) section above.
-
-### Training Tips
-- Use patient-level splits to avoid data leakage
-- Monitor GPU memory usage (UNet requires ~8GB VRAM)
-- Save checkpoints regularly during training
-- Use validation set to prevent overfitting
-
----
-
-## Notes
-
-1. **Data Path**: Ensure LIDC-IDRI data is in `LIDC/dataset/LIDC-IDRI/`
-2. **Virtual Environment**: Always run in `.venv` to avoid DLL conflicts
-3. **GPU Memory**: UNet training requires ~8GB VRAM (batch_size=16)
-4. **Patient Splits**: Use patient-level splits to avoid data leakage
+```bash
+# note: on macOS/Linux, use python3 instead of python if python command is not found
+python step7/visualize.py \
+    --result-dir <output_directory> \
+    --slicer-path "<path_to_slicer_executable>"
+```
