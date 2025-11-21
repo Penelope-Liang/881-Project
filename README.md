@@ -227,10 +227,10 @@ python -m step4.eval_unet \
 - `outputs/step4/eval_test/precision_recall_curve.png` - Precision Recall curve
 
 **Evaluation Metrics** (Test set):
-- Dice: ~0.85
-- IoU: ~0.75
-- Precision: ~0.88
-- Recall: ~0.84
+- Dice
+- IoU
+- Precision
+- Recall
 
 ---
 
@@ -263,8 +263,8 @@ python -m step5.regression.predict_reg \
 - `outputs/step5_reg/test_pred/pred_regression.csv` - Prediction results
 
 **Evaluation Metrics**:
-- MAE: ~1.8mm
-- Classification accuracy: ~84%
+- MAE
+- Classification accuracy
 
 #### Option B: CLIP Contrastive Learning (Alternative)
 ```bash
