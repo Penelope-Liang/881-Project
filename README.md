@@ -340,11 +340,6 @@ python step6/train_detector.py \
 - GPU (RTX 3090): ~2-3 hours for 50 epochs
 - CPU: Not recommended (very slow)
 
-**Expected Performance**:
-- mAP@0.5: ~0.75-0.85
-- Precision: ~0.80-0.90
-- Recall: ~0.70-0.80
-
 ---
 
 ### Step 7: 3D Slicer Visualization Pipeline
@@ -465,7 +460,6 @@ python step7/visualize.py \
 - **Input**: 256×256 single-channel ROI image
 - **Output**: Nodule diameter and diameter class
 - **Training**: MSE (regression) + CrossEntropy (classification), Adam optimizer
-- **Performance**: MAE 1.8mm, accuracy 84%
 
 ### 3. CLIP Contrastive Learning Model (Step 5B, Alternative) for Discussion
 - **Architecture**: ResNet18 (image) + LSTM (text)
